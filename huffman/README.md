@@ -2,8 +2,9 @@
 the testfiles folder is unpopulated and not staged through gitignore, as it might contain large files.
 use the following command to populate it or create your own testfiles.
 
-dd if=/dev/urandom of=10K-random.img count=1K
-dd if=/dev/urandom of=10K-random.img count=1M
+``dd if=/dev/urandom of=10K-random.img count=1K``
+
+dd if=/dev/urandom of=10K-random.img count=1M``
 
 ...
 
