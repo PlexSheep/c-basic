@@ -1,4 +1,4 @@
 #!/bin/bash
-echo "compiling $1..."
+echo "compiling $1 ..."
 noext=$(echo "$1" | cut -f 1 -d '.')
-gcc $1 -o bin/$noext
+gcc $1 -o bin/$noext -lm

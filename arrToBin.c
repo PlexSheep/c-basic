@@ -21,7 +21,6 @@ int main(){
         bin[i] = b;
     }
     for(int j = 0; j < 16; j++){
-        if(
             printf("%d", bin[j]);
     }
     printf("\n");
