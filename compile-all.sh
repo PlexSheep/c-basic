@@ -10,4 +10,12 @@ do
         returnCode=1;
     fi
 done
+echo -ne "\nfinished compiling all source files. ";
+if [ "$returnCode" -eq 0 ]
+then
+    echo -ne "No errors occured.";
+else
+    echo -ne "Some errors occured.";
+fi
+echo "";
 exit $returnCode
