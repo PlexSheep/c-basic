@@ -1,2 +1,3 @@
 # c-basic
-Some Basic C code i wrote while learning C
+This Repository features C source code i wrote to learn c. Currently the most advanced thing included is an
+unfinished implementation of the huffman algorithm.
