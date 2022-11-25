@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir -p bin
 returnCode=0
 echo -e "compiling all files in working directory $(pwd)\n"
 for file in $(/bin/ls *.c); 
