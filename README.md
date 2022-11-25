@@ -1,5 +1,5 @@
 # c-basic
-This Repository features C source code i wrote to learn c. Currently the most advanced program included is an
+This Repository features C source code i wrote to learn the C programming language. Currently the most advanced program included is an
 unfinished implementation of the huffman algorithm.
 
 Some programs make use of outdated and unsafe functions such as `gets()` or `scanf()`, which **should never be used**.
