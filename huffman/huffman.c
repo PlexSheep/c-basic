@@ -56,6 +56,7 @@ off_t fsize(const char *filename) {
     return -1;
 }
 
+// print help
 void helper() {
     printf("huffman compression algorithm implementation for educational "
             "purposes.\n\nSyntax:\nhuffman -f fileToCompress\t\tcompress the "
@@ -63,6 +64,7 @@ void helper() {
             "file\nhuffman -h\t\t\t\tshow this help\nhuffman -v\t\t\t\tverbose\n");
 }
 
+// let the magic happen
 int main(int argc, char *argv[]) {
     int opt;
     bool extract_mode = false;
@@ -156,7 +158,7 @@ int main(int argc, char *argv[]) {
             }
         }
         initNodes();
-        int ret;
+        size_t ret;
         while(!feof(fptrR)){
             ret = fread(buf, 1, BUFSIZE, fptrR);
             if(ret == BUFSIZE){
@@ -181,14 +183,30 @@ int main(int argc, char *argv[]) {
                 printf("Undefined behaviour while reading file.\n");
                 exit(EXIT_FAILURE);
             }
-            fseek(fptrR, BUFSIZE, SEEK_CUR);
+            // fread seems to advance the File pointer by itself, so the following line would skip half of the file.
+            // FIXME, the last 512 bit block seems to be skipped.
+            // fseek(fptrR, BUFSIZE, SEEK_CUR);
         }
 
+        if(debug){  // show occurences
+            printf("Occurences (hex):\n");
+            size_t addedUpOccurences = 0;
+            for(int i = 0; i < 256; i++){
+                if(i%5==0)
+                    printf("\n");
+                printf("0x%02x: 0x%016llx ", i, nodes[i].occurences);
+                addedUpOccurences += nodes[i].occurences;
+            }
+            printf("\nFilelength: %dB\nAdded up occurences: %d\nOccurences in Filelength: %f%%\n",
+                    filelen, addedUpOccurences, (float)(100*(addedUpOccurences/(float)filelen)));
+        }
     } 
 
     fclose(fptrR);
     printf("\n");
-    if(debug) // wait for input to end.
+    if(debug){ // wait for input to end.
+        printf("Press Enter to finish.\n");
         getchar();
+    }
     exit(EXIT_SUCCESS);
 }
