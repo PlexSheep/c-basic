@@ -1,23 +1,20 @@
-# see https://opensource.com/article/18/8/what-how-makefile
-# Usage:
-# make        # compile all binary
-# make clean  # remove ALL binaries and objects
+#SOURCES = $(wildcard *.c)
+#BINARIES = $(SOURCES:%.c=%)
+#CFLAGS = -g
+#CC = gcc
+#
+#all: pre $(BINARIES)
+#
+#pre:
+#		@mkdir -p bin huffman/bin huffman/testfiles
+#
+SOURCES = $(wildcard *.c)
+BINARIES = $(SOURCES:%.c=%)
+EXECUTABLES= $(addprefix bin/,${BINARIES})
+all: pre $(EXECUTABLES)
 
-.PHONY = all clean
+pre:
+		@mkdir -p bin
 
-SRCS := $(wildcard *.c)
-BINS := $(SRCS:%.c=%)
-
-all: ${BINS}
-
-%: %.o
-		@echo "Linking..."
-		gcc $< -o bin/$@ -lm
-
-%.o: %.c
-		echo "Creating object..."
-		gcc -c $< -o obj/
-
-clean:
-		@echo "Cleaning up..."
-		rm -rvf *.o ${BINS}
+$(EXECUTABLES): $(SOURCES)
+		$(CC) $(CFLAGS) -o $@ $< -lm
