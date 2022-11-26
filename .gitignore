@@ -53,6 +53,7 @@ dkms.conf
 
 # project specific for c-basic
 huffman/testfiles/*
-huffman/testfiles/
 bin
 */bin
+obj
+*/obj
