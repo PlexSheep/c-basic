@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
 
         // frequency analysis
 
-        uint8_t buf[512];
+        uint8_t* buf = malloc(filelen);
 
         // dump start of file if debugging
         // FIXME add conditions if the part to print is smaller than 512B
@@ -130,7 +130,22 @@ int main(int argc, char *argv[]) {
         // }
 
         // TODO calculate occurences
-        
+        // FIXME this loads the file into RAM completely. Loading a too big file would eat all memory of the system.
+        // This is a dirty hack of an algorithm.
+        for(int i = 0; i < filelen; i++) {
+            fread(buf+i, 1, 1, fptrR); 
+        }
+
+        // now go through all of the stored bytes in the buffer and count the occurences.
+        for(int i = 0; i < filelen; i++) {
+            occurences[*(buf+i)]++;   // FIXME this might get the value of the bytes but +1, not sure about the logic!
+        }
+
+        // holy shit i think the dirty hack is working
+        // well, at least for smaller files.
+        // SEGVAULT for the 10G file, 1G works.
+
+
         if(debug){
             printf("Occurences (Hex):\n");
             for(int i=0;i<256;i++){
