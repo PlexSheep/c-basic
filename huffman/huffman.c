@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+// designed for 512, but other BUFSIZEs work aswell. Don't make it too big or you will get a SEGVAULT
 #define BUFSIZE 512
 
 // a single node, only having information for a single byte.
@@ -144,7 +145,7 @@ int main(int argc, char *argv[]) {
         // dump start of file if debugging
         // FIXME add conditions if the part to print is smaller than 512B
         if(debug){
-            printf("[DEBUG]First 512 bytes are:\n");
+            printf("[DEBUG]First %d bytes are:\n", BUFSIZE);
             fread(buf, 1, BUFSIZE, fptrR);
             for(int i=0;i<BUFSIZE;i++){
                 if(i%16==0)
@@ -159,7 +160,7 @@ int main(int argc, char *argv[]) {
         }
         initNodes();
         size_t ret;
-        while(!feof(fptrR)){
+        while(!feof(fptrR)){    // count occurences
             ret = fread(buf, 1, BUFSIZE, fptrR);
             if(ret == BUFSIZE){
                 // fread success, continue as normal
@@ -210,6 +211,12 @@ int main(int argc, char *argv[]) {
                     filelen - addedUpOccurences, 
                     (float)(100*(addedUpOccurences/(float)filelen)));
         }
+
+        // TODO calculate frequenciePririties
+
+        // TODO build tree using Heaps
+
+        // TODO write Tree and compression to file
     } 
 
     fclose(fptrR);
