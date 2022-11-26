@@ -16,6 +16,7 @@ struct Node {
     uint8_t byte;
     size_t occurences;
     unsigned frequencyPriority;
+    float frequencyRaw;
 };
 
 // a combination of nodes.
@@ -38,9 +39,9 @@ void initNodes(){
         nodes[i].byte = i;
         nodes[i].occurences = 0;
         nodes[i].frequencyPriority = 0;
+        nodes[i].frequencyRaw = -1;
         heaps[i].isRoot = false;
     }
-
 }
 
 // stolen from stackoverflow
@@ -77,6 +78,7 @@ int main(int argc, char *argv[]) {
     FILE *fptrR = NULL; 	// file pointer for reading
     FILE *fptrW = NULL; 	// file pointer for writing
 
+    // process command line options
     while ((opt = getopt(argc, argv, "dvxhf:")) != -1) {
         if (debug)
             printf("optarg is: %s\n", optarg);
@@ -103,7 +105,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Now optind (declared extern int by <unistd.h>) is the index of the first
+    // Now optint (declared extern int by <unistd.h>) is the index of the first
     // non-option argument. If it is >= argc, there were no non-option arguments.
 
     if (verbose)
@@ -213,6 +215,23 @@ int main(int argc, char *argv[]) {
         }
 
         // TODO calculate frequenciePririties
+        float addedUpFrequencies = 0;   // only needed in debug, but it's efficient to calculate it with the loop.
+        for(int i = 0; i < 256; i++){   // calculate frequencies
+            nodes[i].frequencyRaw = 100*nodes[i].occurences / (float)filelen;
+            addedUpFrequencies += nodes[i].frequencyRaw;
+        }
+
+        if(debug){  // print frequencies in debug mode
+            printf("Raw Frequencies of bytes:\n");
+            for(int i = 0; i < 256; i++){
+                printf("0x%02x: %lf\t", i, nodes[i].frequencyRaw);
+                if(i%5==0)
+                    printf("\n");
+            }
+            printf("\nAddedUpFrequencies: %f%%\n", addedUpFrequencies);
+        }
+
+        // TODO sort by frequencieRaw, then sort references by frequency
 
         // TODO build tree using Heaps
 

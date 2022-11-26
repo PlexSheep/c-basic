@@ -19,7 +19,7 @@ pre:
 		@mkdir -p bin huffman/bin huffman/testfiles
 
 clean:
-		rm -rvf bin huffman/bin
+		rm -rvf bin huffman/testfiles huffman/bin
 
 huffman/bin/huffman: huffman/huffman.c
 		$(CC) $(CFLAGS) -o $@ $< -lm
