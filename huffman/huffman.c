@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#define BUFSIZE 512
+
 // a single node, only having information for a single byte.
 struct Node {
     uint8_t byte;
@@ -21,6 +23,24 @@ struct Heap {
     struct Node **Nodes;
     bool isRoot;
 };
+
+// global vars for Heaps and Nodes.
+struct Node* nodes;
+struct Heap* heaps;
+
+// initialize our nodes
+void initNodes(){
+    nodes = malloc(sizeof(struct Node)*256); 
+    heaps = malloc(sizeof(struct Heap)*256);    // not sure if i might need more memory for heaps?
+
+    for(int i = 0; i < 256; i++){
+        nodes[i].byte = i;
+        nodes[i].occurences = 0;
+        nodes[i].frequencyPriority = 0;
+        heaps[i].isRoot = false;
+    }
+
+}
 
 // stolen from stackoverflow
 // https://stackoverflow.com/questions/8236/how-do-you-determine-the-size-of-a-file-in-c
@@ -96,8 +116,8 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
         filelen = fsize(filestring);
-            if(verbose) 
-                printf("filesize: %ldB\n", filelen);
+        if(verbose) 
+            printf("filesize: %ldB\n", filelen);
     } 
     else {
         // empty filestring or filestring is NULL
@@ -111,19 +131,20 @@ int main(int argc, char *argv[]) {
     }
 
     else {
+
         // compress the file
         if (verbose)
             printf("compressing file...\n");
 
         // frequency analysis
-
+        uint8_t buf [BUFSIZE];
 
         // dump start of file if debugging
         // FIXME add conditions if the part to print is smaller than 512B
         if(debug){
             printf("[DEBUG]First 512 bytes are:\n");
-            fread(buf, 1, 512, fptrR);
-            for(int i=0;i<512;i++){
+            fread(buf, 1, BUFSIZE, fptrR);
+            for(int i=0;i<BUFSIZE;i++){
                 if(i%16==0)
                     printf("%08x\t", i);
                 printf("%02x ", buf[i]);
@@ -134,66 +155,40 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-
-        uint64_t occurences[256] = { 0 };
-
-        // TODO calculate occurences
-        // FIXME this loads the file into RAM completely. Loading a too big file would eat all memory of the system.
-        // This is a dirty hack of an algorithm.
-        // uint8_t* buf = malloc(filelen);
-        for(int i = 0; i < filelen; i++) {
-            fread(buf+i, 1, 1, fptrR); 
-        }
-
-        // now go through all of the stored bytes in the buffer and count the occurences.
-        for(int i = 0; i < filelen; i++) {
-            occurences[*(buf+i)]++;   // FIXME this might get the value of the bytes but +1, not sure about the logic!
-        }
-
-        // holy shit i think the dirty hack is working
-        // well, at least for smaller files.
-        // SEGVAULT for the 10G file, 1G works.
-
-
-        if(debug){
-            printf("Occurences (Hex):\n");
-            for(int i=0;i<256;i++){
-                if(i%4==0)
-                    printf("\n");
-                printf("0x%02x: %016lx\t", i, occurences[i]);
+        initNodes();
+        int ret;
+        while(!feof(fptrR)){
+            ret = fread(buf, 1, BUFSIZE, fptrR);
+            if(ret == BUFSIZE){
+                // fread success, continue as normal
+                // calculate occurences.
+                for(int i = 0; i < BUFSIZE; i++){
+                    nodes[buf[i]].occurences++;
+                }
             }
-            printf("\n\nfile length(by pointer):\t\t%luB\n", filelen);
-            long long int addedUpOccurences = 0; // FIXME might not be enough storage for larger files!
-            for(int i=0;i<256;i++){
-                addedUpOccurences += occurences[i];
+            else if((ret < BUFSIZE) && (ret >= 0)){
+                if(!feof(fptrR)) {
+                    // no EOF, but didn't read full buffer. Assuming an error
+                    printf("Error while reading file.");
+                    exit(EXIT_FAILURE);
+                }
+                else{
+                    // reached EOF, finished
+                    break;
+                }
             }
-            printf("file length(added up occurences):\t%lldB\n", addedUpOccurences);
+            else{
+                printf("Undefined behaviour while reading file.\n");
+                exit(EXIT_FAILURE);
+            }
+            fseek(fptrR, BUFSIZE, SEEK_CUR);
         }
 
-        if(verbose)
-            printf("\n\nDone calculating occurences of bytes.\n");
-
-        // TODO
-        // calculate the frequencies of the bytes.
-        double frequencies[256];
-        for(int i=0;i<256;i++){
-            frequencies[i]=((double)occurences[i]/(double)filelen)*100;	// calculate frequencies of bytes in percent (example: 05.23 (%))
-        }
-        if(debug){
-            printf("Frequencies:\n");
-            for(int i=0;i<256;i++){
-                if(i%8==0)
-                    printf("\n");
-                printf("0x%02x: %05.02f%%\t", i, frequencies[i]);
-            }
-            double addedUpFrequencies = 0; 
-            for(int i=0;i<256;i++){
-                addedUpFrequencies += frequencies[i];
-            }
-            printf("\n\nadded up frequencies: %05.02f%%\n",addedUpFrequencies);
-        }
     } 
+
     fclose(fptrR);
     printf("\n");
+    if(debug) // wait for input to end.
+        getchar();
     exit(EXIT_SUCCESS);
 }
