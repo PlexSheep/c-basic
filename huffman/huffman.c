@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+// stolen from stackoverflow
+// https://stackoverflow.com/questions/8236/how-do-you-determine-the-size-of-a-file-in-c
 off_t fsize(const char *filename) {
     struct stat st;
 
@@ -33,7 +35,7 @@ int main(int argc, char *argv[]) {
     bool verbose = false;
     bool debug = false;
     char *filestring = NULL;
-    uint64_t filelen;
+    off_t filelen;
 
     FILE *fptrR = NULL; 	// file pointer for reading
     FILE *fptrW = NULL; 	// file pointer for writing
@@ -73,27 +75,21 @@ int main(int argc, char *argv[]) {
     if (filestring) {
         if(debug)
             printf("[DEBUG]processing given file argument.\n");
-        // open the given file in binary mode, I want this to work with any files,
-        // not just textfiles.
+        // open the given file in binary mode
         fptrR = fopen(filestring, "rb");
         if (fptrR == NULL) {
             fprintf(stderr, "The given file does not exist or is unavailable.\n");
             exit(EXIT_FAILURE);
         }
-        // causes bugs.
-        fseek(fptrR, 0L, SEEK_END);
-        filelen = ftell(fptrR);
-        fseek(fptrR, 0L, SEEK_SET);
+        filelen = fsize(filestring);
+            if(verbose) 
+                printf("filesize: %ldB\n", filelen);
     } 
     else {
         // empty filestring or filestring is NULL
         fprintf(stderr, "Usage: %s [-dvhx -f] [file]\n", argv[0]);
         exit(EXIT_FAILURE);
     }
-
-    // TODO check file size and spit a "what the heck im not a 10x dev, do a
-    if(verbose)
-        printf("filesize: %ldB\n", filelen);
 
     if (extract_mode) {
         printf("extracting is not yet implemented.\n");
@@ -126,81 +122,15 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        uint64_t occurences[256];
-        for(int i=0;i<256;i++){
-            occurences[i]=0;    
-        }
-        // FIXME doesnt loop through full file! only 50% for larger files
-        // Backup occurence counting algorithm
-        /*
-           while(!feof(fptrR)){
-           fseek(fptrR, 512, SEEK_CUR);
-           if(fread(buf, 1, 512, fptrR)){
-           for(int i=0;i<512;i++){
-           occurences[buf[i]]++;
-           }
-           }
-           else{
-           fprintf(stderr, "Error when processing file.\n");
-           exit(EXIT_FAILURE);
-           }
+        uint64_t occurences[256] = { 0 };
 
-        // advance filepointer 512 bytes foreward. If not possible, set endOfFile flag.
-        // FIXME
-        offset += 512;
-        }
-        */
-        // backup
-        while(1){
-            fseek(fptrR, 512, SEEK_CUR);	// this line seems the be making the most problems
+        // not needed
+        // for(int i=0;i<256;i++){
+        //     occurences[i]=0;    
+        // }
 
-            //	On  success, fread() and fwri)te() return the number of items read or written.  
-            //	This number equals the number of bytes transferred only when size is
-            //	1.  If an error occurs, or the end of the file is reached, the return value is a short item count (or zero).
-            //	fread() does not distinguish between end-of-file and error, and callers must use feof(3) and ferror(3) to determine which occurred.
-
-            // FIXME )This is a buggy mess
-            if(512 == fread(buf, 1, 512, fptrR)){
-                for(int i=0;i<512;i++){
-                    occurences[buf[i]]++;
-                }
-            }
-            else if(0 == fread(buf, 1, 512, fptrR)){
-                if(debug)
-                    printf("[DEBUG]fread returned 0! ftell for current position is %lu\n", ftell(fptrR));
-                break;
-            }
-            else{
-                fprintf(stderr, "Error when processing file: %lu, At offset %lu\n",fread(buf, 1, 512, fptrR), ftell(fptrR));
-                exit(EXIT_FAILURE);
-            }
-            if(ftell(fptrR) > filelen) {
-                // ??? unknown error
-                fprintf(stderr, "tried reading further than the file is long somehow?\n");
-                exit(EXIT_FAILURE);
-            }
-        }
-        // ALMOST WORKS! ~200 bytes lost for a 10M file!!!
-        uint8_t bufMini[1];
-        //        while(1){
-        //            if(fread(bufMini, 1, 1, fptrR)){
-        //                occurences[buf[0]]++;	
-        //            }
-        //            else{
-        //                if(ferror(fptrR)){
-        //                    fprintf(stderr, "encountered error when reading file.\n");
-        //                    exit(EXIT_FAILURE);
-        //                }
-        //            }
-        //            fseek(fptrR, 1, SEEK_SET);
-        //            if(ferror(fptrR)){
-        //                fprintf(stderr, "encountered error when reading file.\n");
-        //                exit(EXIT_FAILURE);
-        //            }
-        //            else if(feof(fptrR)){
-        //                break;
-        //            }
-        //        }
+        // TODO calculate occurences
+        
         if(debug){
             printf("Occurences (Hex):\n");
             for(int i=0;i<256;i++){
