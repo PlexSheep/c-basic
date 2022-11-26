@@ -175,16 +175,24 @@ int main(int argc, char *argv[]) {
                     exit(EXIT_FAILURE);
                 }
                 else{
-                    // reached EOF, finished
-                    break;
+                    // reached EOF, but we might still have more Bytes in Buffer, as not every File has n*BUFSIZE Bytes in it.
+                    /*
+                     * I don't really get why i need to use ret+BUFSIZE, sounds to me like it produces
+                     * a buffer overflow, but somehow it gets those last bytes i couldn't get before and brings
+                     * Occurences to 100% in all cases compared against true filelength.
+                     * TODO understand why this works!
+                     */
+                    for(int i = 0; i < ret+BUFSIZE; i++){
+                        nodes[buf[i]].occurences++;
+                    }
                 }
             }
             else{
                 printf("Undefined behaviour while reading file.\n");
                 exit(EXIT_FAILURE);
             }
+            // FIXME, the last 512 bit block is always skipped.
             // fread seems to advance the File pointer by itself, so the following line would skip half of the file.
-            // FIXME, the last 512 bit block seems to be skipped.
             // fseek(fptrR, BUFSIZE, SEEK_CUR);
         }
 
@@ -197,8 +205,10 @@ int main(int argc, char *argv[]) {
                 printf("0x%02x: 0x%016llx ", i, nodes[i].occurences);
                 addedUpOccurences += nodes[i].occurences;
             }
-            printf("\nFilelength: %dB\nAdded up occurences: %d\nOccurences in Filelength: %f%%\n",
-                    filelen, addedUpOccurences, (float)(100*(addedUpOccurences/(float)filelen)));
+            printf("\nFilelength: %lldB\nAdded up occurences: %lld\nDifference: %lld\nOccurences in Filelength: %f%%\n",
+                    filelen, addedUpOccurences, 
+                    filelen - addedUpOccurences, 
+                    (float)(100*(addedUpOccurences/(float)filelen)));
         }
     } 
 
