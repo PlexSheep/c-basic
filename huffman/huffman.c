@@ -8,6 +8,20 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+// a single node, only having information for a single byte.
+struct Node {
+    uint8_t byte;
+    size_t occurences;
+    unsigned frequencyPriority;
+};
+
+// a combination of nodes.
+struct Heap {
+    struct Heap  *parent, *child0,  *child1;
+    struct Node **Nodes;
+    bool isRoot;
+};
+
 // stolen from stackoverflow
 // https://stackoverflow.com/questions/8236/how-do-you-determine-the-size-of-a-file-in-c
 off_t fsize(const char *filename) {
@@ -103,7 +117,6 @@ int main(int argc, char *argv[]) {
 
         // frequency analysis
 
-        uint8_t* buf = malloc(filelen);
 
         // dump start of file if debugging
         // FIXME add conditions if the part to print is smaller than 512B
@@ -124,14 +137,10 @@ int main(int argc, char *argv[]) {
 
         uint64_t occurences[256] = { 0 };
 
-        // not needed
-        // for(int i=0;i<256;i++){
-        //     occurences[i]=0;    
-        // }
-
         // TODO calculate occurences
         // FIXME this loads the file into RAM completely. Loading a too big file would eat all memory of the system.
         // This is a dirty hack of an algorithm.
+        // uint8_t* buf = malloc(filelen);
         for(int i = 0; i < filelen; i++) {
             fread(buf+i, 1, 1, fptrR); 
         }
