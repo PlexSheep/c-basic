@@ -256,16 +256,22 @@ int main(int argc, char *argv[]) {
             }
         }
         if(debug){   // print refs in debug
-        printf("sorted reference values:\n");
-        for (int i = 0; i < 256 - 1; i++){
-            if(i%4==0)
-                printf("\n");
-            printf("ref: %d  \tfreq: %0.02f\t", refs[i], nodes[refs[i]].frequencyRaw);
-            // FIXME doesnt work for all zeros?
+            printf("sorted reference values:\n");
+            for (int i = 0; i < 256 - 1; i++){
+                if(i%4==0)
+                    printf("\n");
+                printf("ref: %d  \tfreq: %0.02f\t", refs[i], nodes[refs[i]].frequencyRaw);
+                // FIXME doesnt work for all zeros?
+            }
+            printf("\n");
         }
-        printf("\n");
+        for (int i = 0; i < 256 - 1; i++){  // set frequencyPriorities from sorted refs
+            // FIXME nodes with the exact same frequency should have the same priority.
+            // frequenciesPrority: lower is more frequent.
+            nodes[refs[i]].frequencyPriority = i;
         }
-        free(refs);
+        // TODO rename refs array and keep until actually no longer needed.
+        //free(refs);
         // TODO build tree using Heaps
 
         // TODO write Tree and compression to file
