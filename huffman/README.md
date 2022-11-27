@@ -1,14 +1,12 @@
 # Huffman
 The `./testfiles` folder is ignored through gitignore, as it might contain large files.
-Use the following command to populate it or create your own testfiles.
+Use the following command in the root directory of this repository populate it or create your own testfiles.
 
-``dd if=/dev/urandom of=10K-random.img count=1K``
+`make`
 
-``dd if=/dev/urandom of=10K-random.img count=1M``
+If you want to do testing using larger files aswell, you can generate these using:
 
-``dd if=/dev/urandom of=10K-random.img count=1G``
-
-...
+`make big`
 
 Files with random bytes won't be able to be compressed by much, that is normal.
 Instead, try something like a text file (or any other file with lower entropy), the LICENSE in the root of this repository for example.
