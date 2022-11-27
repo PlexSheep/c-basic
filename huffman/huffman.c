@@ -129,12 +129,10 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Usage: %s [-dvhx -f] [file]\n", argv[0]);
         exit(EXIT_FAILURE);
     }
-
     if (extract_mode) {
         printf("extracting is not yet implemented.\n");
         // decompress the file
     }
-
     else {
 
         // compress the file
@@ -232,7 +230,42 @@ int main(int argc, char *argv[]) {
         }
 
         // TODO sort by frequencieRaw, then sort references by frequency
+        short* refs = malloc(256*sizeof(short));
+        short tmp;
+        for(int i = 0; i < 256; i++){
+            refs[i] = i;
+        }
 
+        if(debug){   // print refs in debug
+        printf("unsorted reference values:\n");
+        for (int i = 0; i < 256 - 1; i++){
+            if(i%4==0)
+                printf("\n");
+            printf("ref: %d freq: %0.02f\t", refs[i], nodes[refs[i]].frequencyRaw);
+        }
+        }
+        // bubblesort, i don't care. TODO might improve some time later
+        printf("\n");
+        for (int i = 0; i < 256 - 1; i++){
+            for (int j = 0; j < 256 - 1; j++){
+                if (nodes[refs[j]].frequencyRaw > nodes[refs[j + 1]].frequencyRaw){
+                    tmp = refs[j];
+                    refs[j] = refs[j + 1];
+                    refs[j + 1] = tmp;
+                }
+            }
+        }
+        if(debug){   // print refs in debug
+        printf("sorted reference values:\n");
+        for (int i = 0; i < 256 - 1; i++){
+            if(i%4==0)
+                printf("\n");
+            printf("ref: %d  \tfreq: %0.02f\t", refs[i], nodes[refs[i]].frequencyRaw);
+            // FIXME doesnt work for all zeros?
+        }
+        printf("\n");
+        }
+        free(refs);
         // TODO build tree using Heaps
 
         // TODO write Tree and compression to file
