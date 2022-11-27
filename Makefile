@@ -1,13 +1,3 @@
-#SOURCES = $(wildcard *.c)
-#BINARIES = $(SOURCES:%.c=%)
-#CFLAGS = -g
-#CC = gcc
-#
-#all: pre $(BINARIES)
-#
-#pre:
-#		@mkdir -p bin huffman/bin huffman/testfiles
-#
 .PHONY = all pre testfiles bigfiles
 SOURCES = $(wildcard *.c)
 BINARIES = $(SOURCES:%.c=%)
@@ -41,6 +31,7 @@ testfiles:
 		
 
 bigfiles:
+		@echo "Building some bigger testfiles, this might take a while and draw some performance"
 		@dd if=/dev/urandom of=huffman/testfiles/100M-random.img count=100MiB
 		@dd if=/dev/zero of=huffman/testfiles/100M-zero.img count=100MiB
 		@dd if=/dev/urandom of=huffman/testfiles/1G-random.img count=1GiB
