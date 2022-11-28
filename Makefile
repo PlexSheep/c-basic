@@ -14,6 +14,7 @@ clean:
 huffman/bin/huffman: huffman/huffman.c
 		$(CC) $(CFLAGS) -o $@ $< -lm
 
+# TODO convert this phony target into multiple smaller file targets
 testfiles:
 		@dd if=/dev/urandom of=huffman/testfiles/1K-random.img count=1KiB
 		@dd if=/dev/urandom of=huffman/testfiles/10K-random.img count=10KiB
@@ -30,6 +31,7 @@ testfiles:
 		@yes 'lslfkpoipop iipfiasp' | head -c 1MB > huffman/testfiles/mid.txt
 		
 
+# TODO convert this phony target into multiple smaller file targets
 bigfiles:
 		@echo "Building some bigger testfiles, this might take a while and draw some performance"
 		@dd if=/dev/urandom of=huffman/testfiles/100M-random.img count=100MiB
