@@ -212,7 +212,7 @@ int main(int argc, char *argv[]) {
                     (float)(100*(addedUpOccurences/(float)filelen)));
         }
 
-        // TODO calculate frequenciePririties
+        // calculate frequenciePririties
         float addedUpFrequencies = 0;   // only needed in debug, but it's efficient to calculate it with the loop.
         for(int i = 0; i < 256; i++){   // calculate frequencies
             nodes[i].frequencyRaw = 100*nodes[i].occurences / (float)filelen;
@@ -229,8 +229,8 @@ int main(int argc, char *argv[]) {
             printf("\nAddedUpFrequencies: %f%%\n", addedUpFrequencies);
         }
 
-        // TODO sort by frequencieRaw, then sort references by frequency
-        short* refs = malloc(256*sizeof(short));
+        // sort by frequencieRaw, then sort references by frequency
+        short refs[256];
         short tmp;
         for(int i = 0; i < 256; i++){
             refs[i] = i;
@@ -245,6 +245,7 @@ int main(int argc, char *argv[]) {
         }
         }
         // bubblesort, i don't care. TODO might improve some time later
+        // FIXME doesnt work for all zeros?
         printf("\n");
         for (int i = 0; i < 256 - 1; i++){
             for (int j = 0; j < 256 - 1; j++){
@@ -261,7 +262,6 @@ int main(int argc, char *argv[]) {
                 if(i%4==0)
                     printf("\n");
                 printf("ref: %d  \tfreq: %0.02f\t", refs[i], nodes[refs[i]].frequencyRaw);
-                // FIXME doesnt work for all zeros?
             }
             printf("\n");
         }
@@ -270,14 +270,33 @@ int main(int argc, char *argv[]) {
             // frequenciesPrority: lower is more frequent.
             nodes[refs[i]].frequencyPriority = i;
         }
-        // TODO rename refs array and keep until actually no longer needed.
-        //free(refs);
-        // TODO build tree using Heaps
+        // TODO build tree 
+        /*
+         *      Start with as many leaves as there are symbols.
+         *      Enqueue all leaf nodes into the first queue (by probability in increasing order so that the 
+         *      least likely item is in the head of the queue).
+         *      While there is more than one node in the queues:
+         *      Dequeue the two nodes with the lowest weight by examining the fronts of both queues.
+         *      Create a new internal node, with the two just-removed nodes as children (either node can be 
+         *      either child) and the sum of their weights as the new weight.
+         *      Enqueue the new node into the rear of the second queue.
+         *      The remaining node is the root node; the tree has now been generated.
+         *
+         *      Once the Huffman tree has been generated, it is traversed to generate a dictionary which maps 
+         *      the symbols to binary codes as follows:
+         *
+         *      Start with current node set to the root.
+         *      If node is not a leaf node, label the edge to the left child as 0 and the edge to the right 
+         *      child as 1. Repeat the process at both the left child and the right child.
+         */
+
 
         // TODO write Tree and compression to file
+        // TODO specify output file using -o flag
     } 
 
     fclose(fptrR);
+    fclose(fptrW);
     printf("\n");
     if(debug){ // wait for input to end.
         printf("Press Enter to finish.\n");
