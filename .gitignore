@@ -57,3 +57,7 @@ bin
 */bin
 obj
 */obj
+CMakeFiles
+build
+CMakeCache.txt
+Makefile
