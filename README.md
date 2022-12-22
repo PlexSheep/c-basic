@@ -10,9 +10,7 @@ alternative, but that may not always be the case.
 All code in this Repository was written on and for a Linux x86_64 system. It might not work on other systems.
 
 ## Makefile / Compiling
-I have spent some time building a makefile. You can compile all source code using `make`.
-This will also generate some smaller testfiles for use with the Huffman implementation. In case you want to
-try Huffman with some bigger files, you can make your own or do `make big` to autogenerate the bigger files aswell.
+I have spent some time building a CMakeLists.txt. You can compile all source code using `cmake . && cmake --build .`.
 
 ### Note:
 
