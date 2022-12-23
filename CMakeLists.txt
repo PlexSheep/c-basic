@@ -43,3 +43,29 @@ add_executable( warning                 src/warning.c               )
 add_executable( pointer-arithmetic      src/pointer-arithmetic.c    ) 
 
 target_link_libraries(abc m)    # link libm to abc
+
+project(huffman)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/huffman/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/huffman/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/huffman/bin)
+add_executable( huffman                 huffman/src/huffman.c       ) 
+
+execute_process (
+    COMMAND bash -c "mkdir -p huffman/testfiles"
+	COMMAND bash -c "yes 'SAFJALJ AF OIAIFOsdp' | head -c 100KB > huffman/testfiles/small.txt"
+    COMMAND bash -c "dd if=/dev/urandom of=huffman/testfiles/1K-random.img count=1KiB"
+	COMMAND bash -c "dd if=/dev/urandom of=huffman/testfiles/10K-random.img count=10KiB"
+	COMMAND bash -c "dd if=/dev/urandom of=huffman/testfiles/100K-random.img count=100KiB"
+	COMMAND bash -c "dd if=/dev/urandom of=huffman/testfiles/1M-random.img count=1MiB"
+	COMMAND bash -c "dd if=/dev/urandom of=huffman/testfiles/10M-random.img count=10MiB"
+	COMMAND bash -c "dd if=/dev/zero of=huffman/testfiles/1K-zero.img count=1KiB"
+	COMMAND bash -c "dd if=/dev/zero of=huffman/testfiles/10K-zero.img count=10KiB"
+	COMMAND bash -c "dd if=/dev/zero of=huffman/testfiles/100K-zero.img count=100KiB"
+	COMMAND bash -c "dd if=/dev/zero of=huffman/testfiles/1M-zero.img count=1MiB"
+	COMMAND bash -c "dd if=/dev/zero of=huffman/testfiles/10M-zero.img count=10MiB"
+	COMMAND bash -c "echo -e \"Wer\ndas\nliest\nist\ndoof\n\" > huffman/testfiles/tiny.txt"
+	COMMAND bash -c "yes 'lslfkpoipop iipfiasp' | head -c 1MB > huffman/testfiles/mid.txt"
+)                                                                                                
+
+# TODO add condition to also generate bigger files
+# TODO add targets for these testfiles
