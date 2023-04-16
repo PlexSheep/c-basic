@@ -17,3 +17,7 @@ I have spent some time building a CMakeLists.txt. You can compile all source cod
 `scanf()` is not inherently unsafe, but must be handled very careful and isn't recommended by most, so i have
 chosen to classify it as unsafe. If you know exactly what you are doing using `scanf()` seems to be acceptable.
 I consider the use of `scanf()` to be bad practice.
+
+# Mirrored
+The origin of this repository is [git.cscherr.de](https://git.cscherr.de/PlexSheep/c-basic.git)
+It is mirrored to [github](https://github.com/PlexSheep/c-basic)
