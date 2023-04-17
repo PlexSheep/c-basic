@@ -61,3 +61,4 @@ CMakeFiles
 build
 CMakeCache.txt
 Makefile
+src/huffman/testfiles
