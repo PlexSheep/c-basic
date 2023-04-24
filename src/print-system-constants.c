@@ -1,3 +1,6 @@
+/**
+ * see: https://en.cppreference.com/w/c/types/limits
+ */
 #include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
