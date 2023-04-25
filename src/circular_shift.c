@@ -11,6 +11,7 @@
  * when the shift count is 0 or >= the width of unsigned int.
  */
 
+#include <stdio.h>
 #include <stdint.h>  // for uint32_t, to get 32-bit-wide rotates, regardless of the size of int.
 #include <limits.h>  // for CHAR_BIT
 
@@ -27,6 +28,7 @@ uint32_t rotr32 (uint32_t value, unsigned int count) {
 }
 
 uint32_t main(int* argc, char** argv) {
+    // compiler warning for this comparison, but this works as intended.
     if (argc < 3) {
         printf("give two integers as argument!\n");
         return 1;
