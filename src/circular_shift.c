@@ -37,9 +37,10 @@ uint32_t main(int* argc, char** argv) {
     uint32_t shift_width;
     sscanf(argv[1], "%d", &x);
     sscanf(argv[2], "%d", &shift_width);
-    printf("shift width:\t%d\n", shift_width);
     uint32_t rotr = rotr32(x, shift_width);
     uint32_t rotl = rotl32(x, shift_width);
+    printf("shift width: %d\n", shift_width);
+    printf("sizeof x: %d\n", sizeof(x));
     printf("original: 0b%032b | 0x%08x | %u\n", x, x, x, x);
     printf("rshifted: 0b%032b | 0x%08x | %u\n", rotr, rotr, rotr, rotr);
     printf("lshifted: 0b%032b | 0x%08x | %u\n", rotl, rotl, rotl, rotl);
