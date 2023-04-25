@@ -26,11 +26,19 @@ uint32_t rotr32 (uint32_t value, unsigned int count) {
     return (value >> count) | (value << (-count & mask));
 }
 
-uint32_t main() {
-    uint32_t x = 0x1337;
-    uint32_t rotr = rotr32(x, 17);
-    uint32_t rotl = rotl32(x, 17);
-    printf("original:\t%032b - 0x%x - %d\n", x, x, x, x);
-    printf("rshifted:\t%032b - 0x%x - %d\n", x, rotr, rotr, rotr);
-    printf("lshifted:\t%032b - 0x%x - %d\n", x, rotl, rotl, rotl);
+uint32_t main(int* argc, char** argv) {
+    if (argc < 3) {
+        printf("give two integers as argument!\n");
+        return 1;
+    }
+    uint32_t x;
+    uint32_t shift_width;
+    sscanf(argv[1], "%d", &x);
+    sscanf(argv[2], "%d", &shift_width);
+    printf("shift width:\t%d\n", shift_width);
+    uint32_t rotr = rotr32(x, shift_width);
+    uint32_t rotl = rotl32(x, shift_width);
+    printf("original: 0b%032b | 0x%08x | %u\n", x, x, x, x);
+    printf("rshifted: 0b%032b | 0x%08x | %u\n", rotr, rotr, rotr, rotr);
+    printf("lshifted: 0b%032b | 0x%08x | %u\n", rotl, rotl, rotl, rotl);
 }
