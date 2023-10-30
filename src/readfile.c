@@ -1,9 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
  
-int main(void)
+int main(int argc, char** argv)
 {
-   char filename[] = "file.txt";
+   if (argc != 2) {
+      printf("usage: %s FILE", argv[0]);
+      exit(1);
+   }
+   char* filename = argv[1];
    char buf[2];
    FILE *fp;
     

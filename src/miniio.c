@@ -2,9 +2,9 @@
 #include <string.h>
 
 int my_strlen(const char *s) {
-  int len = 0;
-  while (s[len] != 0) {
-      len++;
+  register int len = 0; // try to use a register instead of a stack variable
+  while (s[len]) {
+    len++;
   }
   return len;
 }

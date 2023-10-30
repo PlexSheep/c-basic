@@ -62,3 +62,5 @@ build
 CMakeCache.txt
 Makefile
 src/huffman/testfiles
+data
+cmake_install.cmake

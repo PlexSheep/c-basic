@@ -20,7 +20,7 @@ double factorial(double i) {
 
     // someone said i need 2 for loops. Totally wrong?
     for(int j=1;j<given;j++){
-        
+
         p *= j;
         //printf("[DEBUG]p is %f, j is %d\n", p, j);
     }
@@ -35,16 +35,15 @@ int main(int argc, char *argv[]){
     int k = 0;
     int end = 0;
     while(!end){
-	res += euler(k);
-	printf("%f, %f\n", res, lres);
-	if(res==lres)
-	    end = 1;
-	else { 
-	    lres = res;
-	}
-	k++;
+        res += euler(k);
+        printf("%f, %f\n", res, lres);
+        if(res==lres)
+            end = 1;
+        else {
+            lres = res;
+        }
+        k++;
     }
     printf("calculated eulers number as %f\n", res);
     return 0;
 }
-
